@@ -1,33 +1,24 @@
-# -*- coding: utf-8 -*-
-# Ä£ÄâÒ»¸ö¼«¼òµÄ Agent ¹æ»®Æ÷
+ï»¿# -*- coding: utf-8 -*-
 class OmniAgent:
-    def __init__(self):
-        self.tools = {
-            "search_web": self.search_web,
-            "run_code": self.run_code
-        }
-
     def search_web(self, query):
-        return f"[¹¤¾ßÖ´ĞĞ] ËÑË÷ÁË: {query}£¬·µ»ØÁË 3 Ìõ½á¹û¡£"
+        return f"[Tool] Searched: {query}, returned 3 results."
 
     def run_code(self, code):
-        return f"[¹¤¾ßÖ´ĞĞ] ³É¹¦ÔËĞĞ´úÂë£¬Êä³ö: Hello OmniLLM!"
+        return f"[Tool] Executed code, output: Hello OmniLLM!"
 
     def think_and_act(self, user_prompt):
-        print(f"ÓÃ»§: {user_prompt}")
-        # ÕâÀïÄ£Äâ´óÄ£ĞÍ·ÖÎöÒâÍ¼£¬²¢¾ö¶¨µ÷ÓÃ¹¤¾ß
-        if "ËÑË÷" in user_prompt:
-            print("OmniLLM ÕıÔÚË¼¿¼: ĞèÒªµ÷ÓÃ search_web")
-            result = self.tools["search_web"](user_prompt)
-        elif "ÔËĞĞ" in user_prompt:
-            print("OmniLLM ÕıÔÚË¼¿¼: ĞèÒªµ÷ÓÃ run_code")
-            result = self.tools["run_code"](user_prompt)
+        print(f"User: {user_prompt}")
+        if "search" in user_prompt:
+            print("OmniLLM thinking: calling search_web")
+            result = self.search_web(user_prompt)
+        elif "run" in user_prompt:
+            print("OmniLLM thinking: calling run_code")
+            result = self.run_code(user_prompt)
         else:
-            result = "ÆÕÍ¨»Ø¸´: ÎÒ²»ĞèÒª¹¤¾ßÒ²ÄÜ»Ø´ğÄã¡£"
-        
-        print(f"Agent ×îÖÕ»Ø¸´: {result}\n")
+            result = "Normal response."
+        print(f"Agent Reply: {result}\n")
 
 if __name__ == "__main__":
     agent = OmniAgent()
-    agent.think_and_act("°ïÎÒËÑË÷Ò»ÏÂ½ñÌìµÄ×îĞÂAIĞÂÎÅ")
-    agent.think_and_act("°ïÎÒÔËĞĞÒ»¶Î Python ´úÂë")
+    agent.think_and_act("search latest AI news")
+    agent.think_and_act("run python code")

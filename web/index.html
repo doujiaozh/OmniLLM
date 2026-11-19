@@ -1,8 +1,10 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <link rel="manifest" href="/web/manifest.json">
+    <meta name="theme-color" content="#238636">
     <meta charset="UTF-8">
-    <title>OmniLLM - ¼«¿Í´óÄ£ĞÍ</title>
+    <title>OmniLLM - æå®¢å¤§æ¨¡å‹</title>
     <style>
         body { background-color: #0d1117; color: #c9d1d9; font-family: monospace; margin: 0; padding: 20px; }
         #chat-box { width: 100%; max-width: 800px; height: 500px; border: 1px solid #30363d; border-radius: 6px; overflow-y: auto; padding: 10px; margin-bottom: 10px; background: #161b22; }
@@ -16,13 +18,13 @@
     </style>
 </head>
 <body>
-    <h2>OmniLLM // ¼«¿Íµ×²ã¶Ô»°ÒıÇæ</h2>
+    <h2>OmniLLM // æå®¢åº•å±‚å¯¹è¯å¼•æ“</h2>
     <div id="chat-box">
-        <div class="msg ai">OmniLLM ÒÑÆô¶¯¡£µ×²ãÒıÇæ¾ÍĞ÷£¬ÇëÊäÈëÄãµÄÖ¸Áî¡£</div>
+        <div class="msg ai">OmniLLM å·²å¯åŠ¨ã€‚åº•å±‚å¼•æ“å°±ç»ªï¼Œè¯·è¾“å…¥ä½ çš„æŒ‡ä»¤ã€‚</div>
     </div>
     <div id="input-area">
-        <input type="text" id="user-input" placeholder="ÊäÈëÖ¸Áî£¬°´»Ø³µ·¢ËÍ..." autocomplete="off">
-        <button onclick="sendMessage()">·¢ËÍ</button>
+        <input type="text" id="user-input" placeholder="è¾“å…¥æŒ‡ä»¤ï¼ŒæŒ‰å›è½¦å‘é€..." autocomplete="off">
+        <button onclick="sendMessage()">å‘é€</button>
     </div>
 
     <script>
@@ -37,14 +39,14 @@
             const text = input.value.trim();
             if (!text) return;
             
-            // ´òÓ¡ÓÃ»§ÏûÏ¢
+            // æ‰“å°ç”¨æˆ·æ¶ˆæ¯
             chatBox.innerHTML += `<div class="msg user">> ${text}</div>`;
             input.value = '';
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // Ä£Äâµ×²ãÍÆÀí£¨ÑÓ³Ù»Ø¸´£©
+            // æ¨¡æ‹Ÿåº•å±‚æ¨ç†ï¼ˆå»¶è¿Ÿå›å¤ï¼‰
             setTimeout(() => {
-                const reply = `ÊÕµ½Ö¸Áî: "${text}"¡£µ±Ç°ÔËĞĞÓÚ¼«¿Í´¿Ç°¶ËÑİÊ¾»·¾³£¬ºóĞø½«½ÓÈëµ×²ã Core ÒıÇæ¡£`;
+                const reply = `æ”¶åˆ°æŒ‡ä»¤: "${text}"ã€‚å½“å‰è¿è¡Œäºæå®¢çº¯å‰ç«¯æ¼”ç¤ºç¯å¢ƒï¼Œåç»­å°†æ¥å…¥åº•å±‚ Core å¼•æ“ã€‚`;
                 chatBox.innerHTML += `<div class="msg ai">${reply}</div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
             }, 800);
