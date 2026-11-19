@@ -1,27 +1,94 @@
 ﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <meta charset="UTF-8">
+    <!-- 这行是适配手机等移动设备的核心！ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OmniLLM - 极客大模型</title>
     <link rel="manifest" href="/web/manifest.json">
     <meta name="theme-color" content="#238636">
-    <meta charset="UTF-8">
-    <title>OmniLLM - 极客大模型</title>
     <style>
-        body { background-color: #0d1117; color: #c9d1d9; font-family: monospace; margin: 0; padding: 20px; }
-        #chat-box { width: 100%; max-width: 800px; height: 500px; border: 1px solid #30363d; border-radius: 6px; overflow-y: auto; padding: 10px; margin-bottom: 10px; background: #161b22; }
-        .msg { margin-bottom: 15px; }
+        /* 1. 重置基础样式，消除浏览器默认边距 */
+        * { box-sizing: border-box; }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: monospace;
+        }
+
+        /* 2. 使用 Flexbox 让页面像 App 一样上下铺满 */
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* 视口高度的 100% */
+            padding: 10px;
+        }
+
+        h2 {
+            margin: 5px 0 15px 0;
+            font-size: 1.2rem;
+            text-align: center;
+            font-weight: normal;
+        }
+
+        /* 3. 聊天框自动拉伸填满剩余空间 */
+        #chat-box {
+            flex: 1; /* 自动撑满中间区域 */
+            width: 100%;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            background: #161b22;
+            padding: 10px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        .msg { margin-bottom: 12px; line-height: 1.5; word-wrap: break-word; }
         .user { color: #58a6ff; }
         .ai { color: #3fb950; }
-        #input-area { max-width: 800px; display: flex; }
-        input[type="text"] { flex: 1; padding: 10px; background: #0d1117; border: 1px solid #30363d; color: #c9d1d9; border-radius: 4px 0 0 4px; outline: none; font-family: monospace; }
-        button { padding: 10px 20px; background: #238636; border: 1px solid #2ea043; color: white; border-radius: 0 4px 4px 0; cursor: pointer; font-family: monospace; }
+
+        /* 4. 底部输入区固定 */
+        #input-area {
+            width: 100%;
+            display: flex;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            border-radius: 4px 0 0 4px;
+            outline: none;
+            font-family: monospace;
+            font-size: 16px; /* 设为16px防止手机浏览器点击时自动放大 */
+        }
+
+        button {
+            padding: 12px 20px;
+            background: #238636;
+            border: 1px solid #2ea43a;
+            color: white;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-family: monospace;
+            font-size: 16px;
+            white-space: nowrap;
+        }
         button:hover { background: #2ea043; }
     </style>
 </head>
 <body>
-    <h2>OmniLLM // 极客底层对话引擎</h2>
+    <h2>OmniLLM // 极客底层引擎</h2>
+    
     <div id="chat-box">
-        <div class="msg ai">OmniLLM 已启动。底层引擎就绪，请输入你的指令。</div>
+        <div class="msg ai">OmniLLM 已启动。底层引擎就绪，请输入指令。</div>
     </div>
+    
     <div id="input-area">
         <input type="text" id="user-input" placeholder="输入指令，按回车发送..." autocomplete="off">
         <button onclick="sendMessage()">发送</button>
@@ -39,17 +106,29 @@
             const text = input.value.trim();
             if (!text) return;
             
-            // 打印用户消息
             chatBox.innerHTML += `<div class="msg user">> ${text}</div>`;
             input.value = '';
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // 模拟底层推理（延迟回复）
-            setTimeout(() => {
-                const reply = `收到指令: "${text}"。当前运行于极客纯前端演示环境，后续将接入底层 Core 引擎。`;
-                chatBox.innerHTML += `<div class="msg ai">${reply}</div>`;
+            // 显示“正在思考”的占位提示
+            const loadingId = "loading-" + Date.now();
+            chatBox.innerHTML += `<div class="msg ai" id="${loadingId}">AI 正在疯狂计算中... (加载本地模型需要几秒钟)</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById(loadingId).remove(); // 移除思考提示
+                chatBox.innerHTML += `<div class="msg ai">${data.reply}</div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
-            }, 800);
+            })
+            .catch(err => {
+                document.getElementById(loadingId).innerHTML = `<span style="color:red">连接后端失败，请检查 server.py 是否运行。</span>`;
+            });
         }
     </script>
 </body>
