@@ -18,6 +18,7 @@ class OmniAgent:
             result = "Normal response."
         print(f"Agent Reply: {result}\n")
 
+
 if __name__ == "__main__":
     agent = OmniAgent()
     agent.think_and_act("search latest AI news")
